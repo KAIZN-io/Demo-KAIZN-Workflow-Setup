@@ -15,20 +15,11 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v3
 
-    - name: Install Dependencies
-      run: |
-        sudo apt-get update
-        sudo apt-get install -y jq
+    - name: Set up Permissions for Script
+      run: chmod +x ./scripts/summarize_requirements.sh
 
-    - name: Find and Summarize requirements.md Files
-      run: |
-        echo "# Summary of Requirements" > SUMMARY.md
-        find . -type f -name "requirements.md" | while read file; do
-          echo "## Requirements from $(dirname "$file")" >> SUMMARY.md
-          echo "" >> SUMMARY.md
-          cat "$file" | sed 's/\]\s/\]\n/g' >> SUMMARY.md  # Replace '] ' with ']\n' more directly
-          echo "" >> SUMMARY.md
-        done
+    - name: Run Summary Script
+      run: ./scripts/summarize_requirements.sh
 
     - name: Commit and Push Summary File
       run: |
