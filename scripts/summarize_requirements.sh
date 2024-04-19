@@ -13,13 +13,17 @@ done < <(git log --pretty=format:%s)
 find . -name "requirements.md" | sort | while read file; do
     directory=$(dirname "$file")
     echo "## Requirements from $directory" >> SUMMARY.md
-    echo "| Requirement ID | Present in Git History |" >> SUMMARY.md
-    echo "|----------------|------------------------|" >> SUMMARY.md
+    echo "| Requirement ID | Description | Present in Git History |" >> SUMMARY.md
+    echo "|----------------|-------------|-----------------------|" >> SUMMARY.md
     # Ensure that all lines, including those that might end without a newline, are read
     while IFS= read -r line || [[ -n "$line" ]]; do
         [[ -z "$line" ]] && continue  # Skip empty lines
         # Extract requirement ID
         req_id=$(echo "$line" | grep -o '\[.*\]')
+        # Escape brackets for use in sed
+        escaped_req_id=$(echo "$req_id" | sed 's/[][]/\\&/g')
+        # Extract the description text
+        description=$(echo "$line" | sed -e "s/^$escaped_req_id //")
         # Initialize a flag to false
         found="No"
         # Check if the requirement ID is present in any commit message
@@ -29,7 +33,7 @@ find . -name "requirements.md" | sort | while read file; do
                 break
             fi
         done
-        echo "| $line | $found |" >> SUMMARY.md
+        echo "| $req_id | $description | $found |" >> SUMMARY.md
     done < "$file"
     echo "" >> SUMMARY.md
 done
