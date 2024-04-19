@@ -1,0 +1,38 @@
+name: Summarize Requirements
+
+on:
+  push:
+    branches:
+      - master
+  pull_request:
+    branches:
+      - master
+
+jobs:
+  summarize:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+
+    - name: Install Dependencies
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y jq
+
+    - name: Find and Summarize requirements.md Files
+      run: |
+        echo "# Summary of Requirements" > SUMMARY.md
+        find . -type f -name "requirements.md" | while read file; do
+          echo "## Requirements from $(dirname "$file")" >> SUMMARY.md
+          cat "$file" >> SUMMARY.md
+          echo "" >> SUMMARY.md
+        done
+
+    - name: Commit and Push Summary File
+      run: |
+        git config --global user.email "action@github.com"
+        git config --global user.name "GitHub Action"
+        git add SUMMARY.md
+        git commit -m "Update SUMMARY.md with latest requirements"
+        git push
