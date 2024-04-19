@@ -1,6 +1,6 @@
 # Trace Project Requirements and Descriptions
 
-This repository presents a small example of how you can develop compliant medical software using the KAIZN UG development process. The repository contains a simple Visual Studio Code extension that allows you to trace requirements and descriptions in your code.
+This repository presents a small example of how you can develop compliant medical software using the KAIZN UG development process. The repository contains a simple Visual Studio Code extension that allows you to trace requirements and descriptions of your projects.
 
 ## Installation
 To install this extension, follow these steps:
